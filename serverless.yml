@@ -7,10 +7,31 @@ provider:
 
 functions:
   rename:
-    handler: handler.hello
+    handler: handler.rename
     events:
       - s3:
-        bucket: dmichael-test-bucket
+        bucket: ihefc
         event: s3:ObjectCreated:*
         rules:
           - suffix: .mp3
+
+resources:
+  Resources:
+    S3BucketIhefc:
+      Type: AWS::S3::Bucket
+        # add additional custom bucket configuration here
+    RenameLambdaPermissionIhefcS3:
+      Type: "AWS::Lambda::Permission"
+      Properties:
+        FunctionName:
+          "Fn::GetAtt":
+            - RenameLambdaFunction
+            - Arn
+        Principal: "s3.amazonaws.com"
+        Action: "lambda:InvokeFunction"
+        SourceAccount:
+          Ref: AWS::AccountId
+        SourceArn:
+          "Fn::GetAtt":
+          - S3BucketIhefc
+          - Arn
