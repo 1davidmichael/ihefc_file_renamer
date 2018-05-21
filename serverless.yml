@@ -1,0 +1,16 @@
+service: ihefc-renamer
+
+provider:
+  name: aws
+  runtime: python3.6
+  region: us-east-2
+
+functions:
+  rename:
+    handler: handler.hello
+    events:
+      - s3:
+        bucket: dmichael-test-bucket
+        event: s3:ObjectCreated:*
+        rules:
+          - suffix: .mp3
